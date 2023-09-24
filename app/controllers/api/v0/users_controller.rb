@@ -3,7 +3,6 @@ class Api::V0::UsersController < ApplicationController
     user = User.new(user_params)
 
     if user.save
-      # Generate a unique API key for the user
       user.generate_api_key
 
       render json: {
