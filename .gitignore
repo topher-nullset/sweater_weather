@@ -31,4 +31,6 @@
 
 # Ignore
 /coverage/*
-/fixtures/vcr_casettes
+/fixtures/vcr_cassettes/Api_V0_ForecastController/GET_index/returns_a_successful_response_with_the_correct_JSON_format.yml
+/fixtures/vcr_cassettes/MapquestService/_get_coordinates/returns_coordinates_for_a_given_location.yml
+/fixtures/vcr_cassettes/WeatherService/_get_weather/returns_weather_data_for_a_given_location.yml

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Api::V0::UsersController, type: :controller do
   describe 'POST #create' do
-    it 'creates a new user', :vcr do
+    it 'creates a new user' do
       post :create, params: { email: 'chris@cullinane.com',
                               password: 'hearmeroar',
                               password_confirmation: 'hearmeroar' }
