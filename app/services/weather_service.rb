@@ -8,10 +8,21 @@ class WeatherService
     end
   end
 
-  def fetch_forecast(coordinates)
+  def get_weather_eta(params)
     response = @conn.get do |req|
       req.params['key'] = weather_api_key
-      req.params['q'] = "#{coordinates['lat']},#{coordinates['lng']}"
+      req.params['q'] = "#{params['lat']},#{params['lng']}"
+      req.params['days'] = params['days']
+      req.params['hour'] = params['hour']
+    end
+
+    handle_response(response)
+  end
+
+  def fetch_forecast(params)
+    response = @conn.get do |req|
+      req.params['key'] = weather_api_key
+      req.params['q'] = "#{params['lat']},#{params['lng']}"
       req.params['days'] = 5
     end
 
@@ -28,8 +39,7 @@ class WeatherService
     if response.success?
       JSON.parse(response.body)
     else
-      # Handle error response as needed
-      nil
+      JSON.parse(response.body)
     end
   end
 end

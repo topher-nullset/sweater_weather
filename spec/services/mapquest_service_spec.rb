@@ -15,4 +15,15 @@ RSpec.describe MapquestService, type: :service do
       expect(response['results'].first['locations'].first['latLng']['lng']).to be_a(Float)
     end
   end
+
+  describe '#get_roadtrip' do
+    it 'returns road trip information for a given origin and destination', :vcr do
+      response = MapquestService.new.get_roadtrip({origin: 'denver,co', destination: 'pueblo,co'})
+      
+      expect(response).to be_a(Hash)
+      expect(response['route']['realTime']).to be_an(Integer)
+      expect(response['route']['time']).to be_an(Integer)
+      expect(response['route']['formattedTime']).to be_an(String)
+    end
+  end
 end
