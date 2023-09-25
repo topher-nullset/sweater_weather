@@ -10,8 +10,7 @@ class Api::V1::BookSearchController < ApplicationController
     end
 
     payload = BookSearchFacade.book_search(location, quantity)
-    
 
-    render json: response_data
+    render json: payload, status: :ok
   end
 end
