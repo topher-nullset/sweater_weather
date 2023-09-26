@@ -47,5 +47,81 @@ RSpec.describe Api::V0::RoadTripController, type: :controller do
       expect(weather).to have_key('condition')
       expect(weather['condition']).to be_a(String)
     end
+
+    it 'works with multi day trips', :vcr do
+      payload = { 
+        origin: 'New York, NY', 
+        destination: 'Panama City, Panama', 
+        api_key: @api_key
+      }
+
+      post :create, params: payload, format: :json
+      expect(response).to have_http_status(:success)
+      parsed = JSON.parse(response.body)
+      expect(parsed).to be_a Hash
+      expect(parsed).to have_key('data')
+
+      data = parsed['data']
+      expect(data).to be_a Hash
+      expect(data).to have_key('id')
+      expect(data['id']).to eq(nil)
+      expect(data).to have_key('type')
+      expect(data['type']).to eq('road_trip')
+      expect(data).to have_key('attributes')
+
+      attributes = data['attributes']
+      expect(attributes).to be_a Hash
+      expect(attributes).to have_key('start_city')
+      expect(attributes['start_city']).to eq('New York, NY')
+      expect(attributes).to have_key('end_city')
+      expect(attributes['end_city']).to eq('Panama City, Panama')
+      expect(attributes['travel_time']).to be_a(String)
+      expect(attributes['weather_at_eta']).to be_a(Hash)
+
+      weather = attributes['weather_at_eta']
+      expect(weather).to be_a Hash
+      expect(weather).to have_key('datetime')
+      expect(weather['datetime']).to be_a(String)
+      expect(weather).to have_key('temperature')
+      expect(weather['temperature']).to be_a(Float)
+      expect(weather).to have_key('condition')
+      expect(weather['condition']).to be_a(String)
+    end
+
+    it 'return impossible if route is impossible', :vcr do
+      payload = { 
+        origin: 'Anchorage, AK', 
+        destination: 'Seoul, South Korea', 
+        api_key: @api_key
+      }
+
+      post :create, params: payload, format: :json
+      expect(response).to have_http_status(:success)
+      parsed = JSON.parse(response.body)
+      expect(parsed).to be_a Hash
+      expect(parsed).to have_key('data')
+
+      data = parsed['data']
+      expect(data).to be_a Hash
+      expect(data).to have_key('id')
+      expect(data['id']).to eq(nil)
+      expect(data).to have_key('type')
+      expect(data['type']).to eq('road_trip')
+      expect(data).to have_key('attributes')
+
+      attributes = data['attributes']
+      expect(attributes).to be_a Hash
+      expect(attributes).to have_key('start_city')
+      expect(attributes['start_city']).to eq('Anchorage, AK')
+      expect(attributes).to have_key('end_city')
+      expect(attributes['end_city']).to eq('Seoul, South Korea')
+      expect(attributes['travel_time']).to be_a(String)
+      expect(attributes['travel_time']).to eq('impossible')
+      expect(attributes['weather_at_eta']).to be_a(Hash)
+
+      weather = attributes['weather_at_eta']
+      expect(weather).to be_a Hash
+      expect(weather).to be_empty
+    end
   end
 end
