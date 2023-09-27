@@ -7,7 +7,7 @@ class OpenlibraryService
 
   def search_books(location, quantity)
     response = @conn.get do |req|
-      req.url "/subjects/#{location}.json?limit=#{quantity.to_i}"
+      req.url "/search.json?q=#{location}&limit=#{quantity.to_i}"
     end
 
     JSON.parse(response.body)

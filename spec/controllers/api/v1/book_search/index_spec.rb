@@ -15,7 +15,7 @@ RSpec.describe Api::V1::BookSearchController, type: :controller do
       expect(data['attributes']).to be_a(Hash)
 
       attributes = data['attributes']
-      expect(attributes['destination']).to eq('Denver,CO')
+      expect(attributes['destination']).to eq('Denver')
       expect(attributes['forecast']).to be_a(Hash)
       expect(attributes['forecast']['summary']).to be_a(String)
       expect(attributes['forecast']['temperature']).to be_a(String)
@@ -25,7 +25,8 @@ RSpec.describe Api::V1::BookSearchController, type: :controller do
       expect(attributes['books'].count).to eq(5)
       expect(attributes['books'].first).to be_a(Hash)
       expect(attributes['books'].first['title']).to be_a(String)
-      expect(attributes['books'].first['isbn']).to be_a(String)
+      expect(attributes['books'].first['isbn']).to be_a(Array)
+      expect(attributes['books'].first['isbn'].first).to be_a(String)
     end
 
     it 'fails with bad params', :vcr do
