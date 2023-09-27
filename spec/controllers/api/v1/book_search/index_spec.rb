@@ -15,7 +15,7 @@ RSpec.describe Api::V1::BookSearchController, type: :controller do
       expect(data['attributes']).to be_a(Hash)
 
       attributes = data['attributes']
-      expect(attributes['destination']).to eq('Denver,CO')
+      expect(attributes['destination']).to eq('Denver')
       expect(attributes['forecast']).to be_a(Hash)
       expect(attributes['forecast']['summary']).to be_a(String)
       expect(attributes['forecast']['temperature']).to be_a(String)

@@ -6,10 +6,10 @@ class BookSearchFacade
 
     # Fetch the weather forecast for the destination city
     weather_request = WeatherService.new.fetch_forecast(coordinates)
-    local = weather_request['location']['name'].downcase
+    location = [weather_request['location']['name'], weather_request['location']['region']].map(&:downcase).join('+')
 
     # Fetch books related to the destination city
-    books = OpenlibraryService.new.search_books(local, quantity)
+    books = OpenlibraryService.new.search_books(location, quantity)
   
     # Prepare the response JSON
     response_data = {
@@ -17,15 +17,15 @@ class BookSearchFacade
         id: nil,
         type: 'books',
         attributes: {
-          destination: location,
+          destination: weather_request['location']['name'],
           forecast: {
             summary: weather_request['current']['condition']['text'],
             temperature: "#{weather_request['current']['temp_f'].to_i} F"
           },
-          total_books_found: books['work_count'],
-          books: books['works'].map do |book|
+          total_books_found: books['numFound'],
+          books: books['docs'].map do |book|
             {
-              isbn: book['key'],
+              isbn: book['isbn'],
               title: book['title']
             }
           end
