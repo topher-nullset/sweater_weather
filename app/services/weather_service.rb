@@ -9,24 +9,34 @@ class WeatherService
   end
 
   def get_weather_eta(params)
-    response = @conn.get do |req|
-      req.params['key'] = weather_api_key
-      req.params['q'] = "#{params['lat']},#{params['lng']}"
-      req.params['days'] = params['days']
-      req.params['hour'] = params['hour']
-    end
+    begin
+      response = @conn.get do |req|
+        req.params['key'] = weather_api_key
+        req.params['q'] = "#{params['lat']},#{params['lng']}"
+        req.params['days'] = params['days']
+        req.params['hour'] = params['hour']
+      end
 
-    handle_response(response)
+      handle_response(response)
+
+    rescue Faraday::ConnectionFailed
+      { error: 'Internal Server Error', status: 500 }
+    end
   end
 
   def fetch_forecast(params)
-    response = @conn.get do |req|
-      req.params['key'] = weather_api_key
-      req.params['q'] = "#{params['lat']},#{params['lng']}"
-      req.params['days'] = 5
-    end
+    begin
+      response = @conn.get do |req|
+        req.params['key'] = weather_api_key
+        req.params['q'] = "#{params['lat']},#{params['lng']}"
+        req.params['days'] = 5
+      end
+  
+      handle_response(response)
 
-    handle_response(response)
+    rescue Faraday::ConnectionFailed
+      { error: 'Internal Server Error', status: 500 }
+    end
   end
 
   private
@@ -39,7 +49,7 @@ class WeatherService
     if response.success?
       JSON.parse(response.body)
     else
-      JSON.parse(response.body)
+      { error: 'Weather API Error', status: response.status }
     end
   end
 end
